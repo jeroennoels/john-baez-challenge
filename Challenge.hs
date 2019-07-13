@@ -7,7 +7,7 @@ import GHC.Exts
 import GHC.Integer.Logarithms
 import qualified Data.Map as M  
 
-
+-- Copied from https://wiki.haskell.org/Prime_numbers
 primesMPE :: [Integer]
 primesMPE = 2 : mkPrimes 3 M.empty prs 9   -- postponed sieve enlargement
     where                                 -- by decoupled primes feed loop
