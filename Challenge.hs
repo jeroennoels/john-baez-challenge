@@ -22,10 +22,12 @@ primesMPE = 2 : mkPrimes 3 M.empty prs 9   -- postponed sieve enlargement
     addSkip n m s = M.alter (Just . maybe [s] (s:)) (n+s) m
     addSkips = foldl' . addSkip
 
+
 integerLog2 :: Integer -> Int
 integerLog2 n
   | n < 1       = error "argument must be positive"
   | otherwise   = I# (integerLog2# n)
+
 
 primes :: [Integer]
 primes = take 250000 primesMPE 
@@ -46,7 +48,7 @@ logvalue :: [Integer] -> Double
 logvalue xs = sum $ zipWith (*) (map fromInteger xs) logprimes
 
 inflate :: Integer
-inflate = 1000000000000000
+inflate = 10000000000000000
 
 betterlog :: Integer -> Double
 betterlog x = let
