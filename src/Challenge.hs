@@ -6,6 +6,11 @@ import Data.List
 import GHC.Exts
 import GHC.Integer.Logarithms
 import qualified Data.Map as M  
+import System.Random (Random, StdGen, randomR, mkStdGen)
+
+-- Constraining the type to be completely that sure Integer is used
+idiv :: Integer -> Integer -> Integer
+idiv = div
 
 -- Copied from https://wiki.haskell.org/Prime_numbers
 primesMPE :: [Integer]
@@ -30,10 +35,10 @@ integerLog2 n
 
 
 primes :: [Integer]
-primes = take 250000 primesMPE 
+primes = take numPrimes primesMPE 
 
 geo :: Integer -> Integer -> Integer 
-geo p m = div (p^(m+1) - 1) (p - 1)
+geo p m = idiv (p^(m+1) - 1) (p - 1)
 
 sigma :: [Integer] -> Integer
 sigma xs = product $ zipWith geo primes xs
@@ -42,32 +47,41 @@ expand :: [Integer] -> Integer
 expand xs = product $ zipWith (^) primes xs
 
 inflate :: Integer
-inflate = 10000000000000000
+inflate = 100000000000000000
 
 betterlog :: Integer -> Double
 betterlog x = let
   log2 = fromIntegral $ integerLog2 x
-  y = div (x * inflate) (2^log2)
+  y = idiv (x * inflate) (2^log2)
   fraction = log (fromInteger y) - log (fromInteger inflate) 
   in log 2 * fromInteger log2 + fraction
 
+prod :: [Integer] -> Integer
+prod xs = product $ zipWith (^) primes xs
+
 logvalue :: [Integer] -> Double
-logvalue xs = let
-  prod = product $ zipWith (^) primes xs
-  in betterlog prod
+logvalue xs = betterlog (prod xs)
 
 robin ::  [Integer] -> Double
 robin xs = fromInteger a / b 
   where n = expand xs
-        a = div (sigma xs * inflate) n
+        a = idiv (sigma xs * inflate) n
         b = fromInteger inflate * log (logvalue xs)
         
 egamma :: Double
 egamma = exp 0.577215664901532860606512090082
 
+numPrimes = 1000000
+
 exponents :: [Integer]
 exponents = [24,14,12,10,10,9,9,9,9,8,8,8,7,7,7,6,6,6,6,6,6,5,5,5,5,5,5,5,5,5,
-  4,4,4,4,4,4,4,4,4,4,4,4] ++ replicate 45 3 ++ replicate 300 2 ++ repeat 1
+  4,4,4,4,4,4,4,4,4,4,4,4] ++ replicate 45 3 ++ replicate 500 2 ++ repeat 1
 
 result :: String
 result = show $ robin $ exponents
+
+randomsR :: Random a => Int -> (a,a) -> [a]
+randomsR seed range = go (mkStdGen seed)
+  where
+    go gen = let (a,next) = randomR range gen
+             in next `seq` a : go next
