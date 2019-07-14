@@ -1,4 +1,3 @@
-{-# LANGUAGE CPP #-}
 {-# LANGUAGE MagicHash #-}
 module Challenge where
 
@@ -6,33 +5,16 @@ import Data.List
 import GHC.Exts
 import GHC.Integer.Logarithms
 import qualified Data.Map as M  
-
+import Primes
 
 -- Constraining the type to be completely that sure Integer is used
 idiv :: Integer -> Integer -> Integer
 idiv = div
 
--- Copied from https://wiki.haskell.org/Prime_numbers
-primesMPE :: [Integer]
-primesMPE = 2 : mkPrimes 3 M.empty prs 9   -- postponed sieve enlargement
-    where                                 -- by decoupled primes feed loop
-    prs = 3 : mkPrimes 5 M.empty prs 9
-    mkPrimes n m ps@ ~(p:pt) q = case (M.null m, M.findMin m) of
-      { (False, (n2, skips)) | n == n2 ->
-             mkPrimes (n+2) (addSkips n (M.deleteMin m) skips) ps q
-      ; _ -> if n < q
-             then    n : mkPrimes (n+2)  m                  ps q
-             else        mkPrimes (n+2) (addSkip n m (2*p)) pt (head pt^2)
-      }
-    addSkip n m s = M.alter (Just . maybe [s] (s:)) (n+s) m
-    addSkips = foldl' . addSkip
-
-
 integerLog2 :: Integer -> Int
 integerLog2 n
   | n < 1       = error "argument must be positive"
   | otherwise   = I# (integerLog2# n)
-
 
 primes :: [Integer]
 primes = take numPrimes primesMPE 
