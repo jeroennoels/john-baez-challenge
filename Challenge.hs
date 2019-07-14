@@ -41,12 +41,6 @@ sigma xs = product $ zipWith geo primes xs
 expand :: [Integer] -> Integer
 expand xs = product $ zipWith (^) primes xs
 
-logprimes :: [Double]
-logprimes = map (log . fromInteger) primes
-  
-logvalue :: [Integer] -> Double
-logvalue xs = sum $ zipWith (*) (map fromInteger xs) logprimes
-
 inflate :: Integer
 inflate = 10000000000000000
 
@@ -57,8 +51,8 @@ betterlog x = let
   fraction = log (fromInteger y) - log (fromInteger inflate) 
   in log 2 * fromInteger log2 + fraction
 
-logvalue2 :: [Integer] -> Double
-logvalue2 xs = let
+logvalue :: [Integer] -> Double
+logvalue xs = let
   prod = product $ zipWith (^) primes xs
   in betterlog prod
 
@@ -66,7 +60,7 @@ robin ::  [Integer] -> Double
 robin xs = fromInteger a / b 
   where n = expand xs
         a = div (sigma xs * inflate) n
-        b = fromInteger inflate * log (logvalue2 xs)
+        b = fromInteger inflate * log (logvalue xs)
         
 egamma :: Double
 egamma = exp 0.577215664901532860606512090082
