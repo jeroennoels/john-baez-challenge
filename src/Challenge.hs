@@ -7,10 +7,6 @@ import GHC.Integer.Logarithms
 import qualified Data.Map as M  
 import Primes
 
--- Constraining the type to be completely that sure Integer is used
-idiv :: Integer -> Integer -> Integer
-idiv = div
-
 integerLog2 :: Integer -> Int
 integerLog2 n
   | n < 1       = error "argument must be positive"
@@ -20,7 +16,7 @@ primes :: [Integer]
 primes = take numPrimes primesMPE 
 
 geo :: Integer -> Integer -> Integer 
-geo p m = idiv (p^(m+1) - 1) (p - 1)
+geo p m = div (p^(m+1) - 1) (p - 1)
 
 sigma :: [Integer] -> Integer
 sigma xs = product $ zipWith geo primes xs
@@ -34,14 +30,14 @@ inflate = 100000000000000000
 betterlog :: Integer -> Double
 betterlog x = let
   log2 = fromIntegral $ integerLog2 x
-  y = idiv (x * inflate) (2^log2)
+  y = div (x * inflate) (2^log2)
   fraction = log (fromInteger y) - log (fromInteger inflate) 
   in log 2 * fromInteger log2 + fraction
 
 robin ::  [Integer] -> Double
 robin xs = fromInteger a / b 
   where n = expand xs
-        a = idiv (sigma xs * inflate) n
+        a = div (sigma xs * inflate) n
         b = fromInteger inflate * log (betterlog n)
         
 egamma :: Double
