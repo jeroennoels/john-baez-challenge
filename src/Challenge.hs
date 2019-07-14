@@ -6,7 +6,7 @@ import Data.List
 import GHC.Exts
 import GHC.Integer.Logarithms
 import qualified Data.Map as M  
-import System.Random (Random, StdGen, randomR, mkStdGen)
+
 
 -- Constraining the type to be completely that sure Integer is used
 idiv :: Integer -> Integer -> Integer
@@ -79,9 +79,3 @@ exponents = [24,14,12,10,10,9,9,9,9,8,8,8,7,7,7,6,6,6,6,6,6,5,5,5,5,5,5,5,5,5,
 
 result :: String
 result = show $ robin $ exponents
-
-randomsR :: Random a => Int -> (a,a) -> [a]
-randomsR seed range = go (mkStdGen seed)
-  where
-    go gen = let (a,next) = randomR range gen
-             in next `seq` a : go next
