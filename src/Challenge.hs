@@ -56,23 +56,18 @@ betterlog x = let
   fraction = log (fromInteger y) - log (fromInteger inflate) 
   in log 2 * fromInteger log2 + fraction
 
-prod :: [Integer] -> Integer
-prod xs = product $ zipWith (^) primes xs
-
-logvalue :: [Integer] -> Double
-logvalue xs = betterlog (prod xs)
-
 robin ::  [Integer] -> Double
 robin xs = fromInteger a / b 
   where n = expand xs
         a = idiv (sigma xs * inflate) n
-        b = fromInteger inflate * log (logvalue xs)
+        b = fromInteger inflate * log (betterlog n)
         
 egamma :: Double
 egamma = exp 0.577215664901532860606512090082
 
 numPrimes = 1000000
 
+-- trial and error!
 exponents :: [Integer]
 exponents = [24,14,12,10,10,9,9,9,9,8,8,8,7,7,7,6,6,6,6,6,6,5,5,5,5,5,5,5,5,5,
   4,4,4,4,4,4,4,4,4,4,4,4] ++ replicate 45 3 ++ replicate 500 2 ++ repeat 1
